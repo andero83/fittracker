@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#125f57">
+  <meta name="description" content="A private, low-friction 8-week home fitness tracker.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Fit Track</title>
+  <style>
+    :root { --ink:#132523; --muted:#5c6c68; --paper:#f7faf7; --card:#fff; --line:#dbe6e1; --green:#125f57; --green-2:#0d7a6d; --mint:#e1f4ed; --amber:#fff3d1; --danger:#a52b24; --shadow:0 10px 28px rgba(20,59,52,.08); }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:linear-gradient(160deg,#edf8f3 0,#f7faf7 42%,#f4f7f4 100%); font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; min-height:100vh; }
+    button,input,textarea { font:inherit; } button { cursor:pointer; } .app { max-width:720px; margin:auto; padding:env(safe-area-inset-top) 16px calc(32px + env(safe-area-inset-bottom)); }
+    header { display:flex; align-items:center; justify-content:space-between; padding:20px 0 14px; } .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.03em; font-size:1.25rem; } .mark { display:grid; place-items:center; width:37px; height:37px; color:white; background:var(--green); border-radius:12px; font-size:19px; }
+    .icon-button { border:1px solid var(--line); background:var(--card); width:44px; height:44px; border-radius:14px; font-size:19px; color:var(--ink); }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); } .hero { padding:20px; background:linear-gradient(135deg,#125f57,#197b6d); color:#fff; border:none; }
+    .eyebrow { margin:0 0 5px; font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; opacity:.78; font-weight:700; } h1 { margin:0; font-size:1.65rem; letter-spacing:-.04em; line-height:1.12; } .sub { margin:8px 0 0; opacity:.92; }
+    .date-nav { display:grid; grid-template-columns:42px 1fr 42px; align-items:center; margin:16px 0; gap:8px; } .date-nav button { width:42px; height:42px; border:1px solid var(--line); background:white; color:var(--green); border-radius:13px; font-size:22px; }
+    .date-copy { text-align:center; } .date-copy strong { display:block; } .date-copy button { color:var(--green); background:none; border:0; text-decoration:underline; padding:2px; font-size:.9rem; }
+    .progress { margin-top:16px; } .progress-line { display:flex; justify-content:space-between; font-size:.88rem; margin-bottom:7px; } .bar { height:8px; background:rgba(255,255,255,.25); border-radius:10px; overflow:hidden; } .bar i { display:block; height:100%; width:0; border-radius:10px; background:#d6f5ca; transition:width .2s; }
+    .section { margin-top:20px; } .section-title { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin:0 2px 9px; } .section-title h2 { margin:0; font-size:1rem; letter-spacing:-.01em; } .section-title span { color:var(--muted); font-size:.86rem; }
+    .session { padding:6px 16px 16px; } .session-note { margin:11px 0 12px; padding:10px 12px; border-radius:12px; font-size:.9rem; color:#38504a; background:var(--mint); }
+    .exercise { display:grid; grid-template-columns:29px 1fr; gap:11px; align-items:start; padding:15px 0; border-bottom:1px solid var(--line); } .exercise:last-of-type { border-bottom:0; } .check { appearance:none; width:26px; height:26px; margin:1px 0 0; border:2px solid #a9bcb5; border-radius:9px; display:grid; place-content:center; background:#fff; } .check:checked { border-color:var(--green); background:var(--green); } .check:checked::after { content:"✓"; color:white; font-weight:800; font-size:17px; } .exercise.done .exercise-name { text-decoration:line-through; color:var(--muted); } .exercise-name { font-weight:700; } .exercise-detail { color:var(--muted); font-size:.9rem; margin-top:2px; }
+    .complete { width:100%; margin-top:12px; border:0; border-radius:15px; min-height:52px; color:white; background:var(--green); font-weight:800; font-size:1rem; } .complete.completed { background:#477f60; } .secondary { border:1px solid var(--line); background:white; border-radius:13px; color:var(--green); padding:10px 13px; font-weight:700; }
+    .week-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; } .week { min-height:65px; border:1px solid var(--line); background:white; color:var(--muted); border-radius:15px; padding:8px; text-align:left; } .week b { display:block; color:var(--ink); font-size:.88rem; } .week.active { background:var(--mint); border-color:var(--green); } .week.complete-week { background:#ebf7e9; } .week small { font-size:.72rem; }
+    .safety { padding:15px 16px; background:var(--amber); box-shadow:none; font-size:.9rem; } .safety b { display:block; margin-bottom:3px; } .safety a { color:#675000; } .rest { padding:18px; text-align:center; } .rest .rest-icon { font-size:30px; } .rest h3 { margin:6px 0 3px; } .rest p { margin:0; color:var(--muted); }
+    dialog { width:min(92vw,620px); border:0; border-radius:22px; padding:0; box-shadow:0 25px 80px rgba(0,0,0,.25); } dialog::backdrop { background:rgba(11,30,27,.5); } .modal { padding:20px; } .modal h2 { margin:0 0 6px; letter-spacing:-.03em; } .modal p { color:var(--muted); margin:0 0 15px; } label { display:block; font-weight:700; font-size:.9rem; margin:14px 0 6px; } input[type=date],input[type=text],textarea { width:100%; border:1px solid #bdcec7; border-radius:12px; padding:11px; background:white; color:var(--ink); } textarea { min-height:200px; resize:vertical; } .modal-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:9px; margin-top:18px; } .danger { color:var(--danger); border-color:#edc2be; } .file-label { display:inline-flex; align-items:center; cursor:pointer; }
+    .settings-list { display:grid; gap:9px; } .settings-list button { display:flex; justify-content:space-between; width:100%; padding:13px; text-align:left; } .hint { font-size:.82rem; color:var(--muted); margin-top:14px !important; } .hidden { display:none!important; }
+    @media (min-width:620px) { .app { padding-left:24px; padding-right:24px; } .week-grid { grid-template-columns:repeat(8,1fr); } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="brand"><span class="mark">✓</span> Fit Track</div><button class="icon-button" id="settingsButton" aria-label="Settings">⚙</button></header>
+    <section class="card hero" aria-live="polite"><p class="eyebrow" id="weekLabel">Week 1 of 8</p><h1 id="sessionTitle">Your session</h1><p class="sub" id="sessionMeta"></p><div class="progress"><div class="progress-line"><span id="progressText">0 of 0 complete</span><span id="percentText">0%</span></div><div class="bar"><i id="progressBar"></i></div></div></section>
+    <nav class="date-nav" aria-label="Choose day"><button id="previousDay" aria-label="Previous day">‹</button><div class="date-copy"><strong id="dateTitle"></strong><button id="todayButton">Today</button></div><button id="nextDay" aria-label="Next day">›</button></nav>
+    <section class="section" id="todaySection"></section>
+    <section class="section"><div class="section-title"><h2>8-week path</h2><span id="pathSummary"></span></div><div class="week-grid" id="weekGrid"></div></section>
+    <section class="section card safety"><b>Keep it comfortable</b><span>Warm up and cool down. Breathe normally—do not hold your breath. Stop for chest pain/pressure, unusual shortness of breath, dizziness or faintness, and seek appropriate medical advice.</span> <a href="https://www.heart.org/en/health-topics/high-blood-pressure/changes-you-can-make-to-manage-high-blood-pressure/getting-active-to-control-high-blood-pressure" target="_blank" rel="noopener">Why this matters</a></section>
+  </main>
+
+  <dialog id="settingsDialog"><form method="dialog" class="modal"><h2>Set up your tracker</h2><p>Your history stays in this browser unless you export it.</p><label for="startDate">Plan start date</label><input id="startDate" type="date"><div class="modal-actions"><button class="secondary" value="cancel">Cancel</button><button class="complete" id="saveStart" value="default">Save</button></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div class="settings-list"><button type="button" class="secondary" id="editSession">Edit the selected session <span>›</span></button><button type="button" class="secondary" id="exportData">Export backup <span>↓</span></button><label class="secondary file-label">Import backup <input id="importData" type="file" accept="application/json" class="hidden"></label><button type="button" class="secondary danger" id="resetData">Erase tracker data <span>×</span></button></div><p class="hint">Editing lets you replace the starter exercises with the exact plan you prefer.</p></form></dialog>
+  <dialog id="editDialog"><form method="dialog" class="modal"><h2>Edit session</h2><p>One line per exercise. Format: <em>Exercise — target or note</em>.</p><label for="editTitle">Session title</label><input id="editTitle" type="text"><label for="editExercises">Exercises</label><textarea id="editExercises"></textarea><label for="editNote">Session note (optional)</label><input id="editNote" type="text"><div class="modal-actions"><button class="secondary" value="cancel">Cancel</button><button class="complete" id="saveEdit" value="default">Save session</button></div></form></dialog>
+  <script>
+  (() => {
+    const STORAGE = 'fit-track-v1';
+    const $ = id => document.getElementById(id);
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const shortDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const toKey = date => { const y=date.getFullYear(), m=String(date.getMonth()+1).padStart(2,'0'), d=String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; };
+    const fromKey = key => { const [y,m,d]=key.split('-').map(Number); return new Date(y,m-1,d,12); };
+    const addDays = (date,n) => { const r=new Date(date); r.setDate(r.getDate()+n); return r; };
+    const today = () => { const d=new Date(); d.setHours(12,0,0,0); return d; };
+    const defaultState = () => ({ startDate:toKey(today()), progress:{}, overrides:{} });
+    let state;
+    try { state = {...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE) || '{}')}; } catch { state = defaultState(); }
+    let selectedDate = today();
+    const save = () => localStorage.setItem(STORAGE, JSON.stringify(state));
+    const progression = [
+      'Ease in: steady, light effort.', 'Add a little time or a few repetitions only if Week 1 felt comfortable.',
+      'Keep a conversational pace; build consistency.', 'Two gentle rounds where listed—quality before speed.',
+      'Slightly longer, still controlled.', 'Use the same calm pace for a little longer.',
+      'Consolidate. Do not chase exhaustion.', 'Repeat the level that feels sustainable.'
+    ];
+    const level = week => ({ reps:[6,7,8,8,9,10,10,10][week-1], march:[45,55,60,70,75,90,90,90][week-1], walk:[10,12,14,16,18,20,20,20][week-1], rounds:week<4?1:2 });
+    const exercise = (name, detail) => ({name,detail});
+    function starterSession(week, weekday) {
+      const l=level(week), warm=`Easy march and shoulder rolls — 3 minutes`, cool=`Slow walk and relaxed breathing — 3 minutes`;
+      const plans = {
+        1:{ title:'Strength A', meta:'About 15–25 minutes', note:'Move slowly. Rest whenever you need.', exercises:[exercise('Warm-up',warm),exercise('Sit-to-stand from sofa',`${l.rounds} × ${l.reps}; use hands for support if helpful`),exercise('Wall push-up',`${l.rounds} × ${l.reps}; keep breathing`),exercise('March in place',`${l.rounds} × ${l.march} seconds; easy pace`),exercise('Cool-down',cool)]},
+        2:{ title:'Easy cardio', meta:'About 15–25 minutes', note:'Choose walking indoors, outdoors, or gentle marching.', exercises:[exercise('Warm-up',warm),exercise('Easy walk or march',`${l.walk} minutes at a pace where you can talk`),exercise('Calf raises holding support',`${l.rounds} × ${l.reps}`),exercise('Cool-down',cool)]},
+        3:{ title:'Mobility & balance', meta:'About 15–20 minutes', note:'Nothing should hurt. Keep support nearby for balance work.', exercises:[exercise('Warm-up',warm),exercise('Shoulder circles',`${l.rounds} × ${l.reps} each direction`),exercise('Supported hip hinge',`${l.rounds} × ${l.reps}; hands on thighs or sofa`),exercise('Supported single-leg balance',`${l.rounds} × 15 seconds each side`),exercise('Easy walk or march',`${Math.max(5,l.walk-6)} minutes`),exercise('Cool-down',cool)]},
+        4:{ title:'Strength B', meta:'About 15–25 minutes', note:'Use the sofa or wall for support. Keep the range comfortable.', exercises:[exercise('Warm-up',warm),exercise('Supported split-stance squat',`${l.rounds} × ${l.reps} each side; shallow is fine`),exercise('Incline push-up on sofa or wall',`${l.rounds} × ${l.reps}`),exercise('Glute bridge',`${l.rounds} × ${l.reps}; skip if it is not comfortable`),exercise('Cool-down',cool)]},
+        5:{ title:'Steady circuit', meta:'About 15–25 minutes', note:'A calm finish to the workweek—not a test.', exercises:[exercise('Warm-up',warm),exercise('March in place',`${l.rounds} × ${l.march} seconds`),exercise('Sit-to-stand from sofa',`${l.rounds} × ${l.reps}`),exercise('Wall push-up',`${l.rounds} × ${l.reps}`),exercise('Easy walk or march',`${Math.max(5,l.walk-5)} minutes`),exercise('Cool-down',cool)]}
+      };
+      return plans[weekday] || null;
+    }
+    function weekFor(date) { const start=fromKey(state.startDate); const days=Math.floor((date-start)/86400000); return Math.min(8,Math.max(1,Math.floor(days/7)+1)); }
+    function sessionFor(date) { const week=weekFor(date), weekday=date.getDay(); const dayMap={1:1,2:2,3:3,4:4,5:5}; const slot=dayMap[weekday]; if (!slot) return null; const key=`${week}-${slot}`; return state.overrides[key] || starterSession(week,slot); }
+    const recordFor = date => { const key=toKey(date); return state.progress[key] || { checks:{}, session:false }; };
+    function updateRecord(date, update) { const key=toKey(date); state.progress[key] = {...recordFor(date), ...update}; save(); }
+    function selectedSessionKey() { const weekday=selectedDate.getDay(), slot={1:1,2:2,3:3,4:4,5:5}[weekday]; return slot ? `${weekFor(selectedDate)}-${slot}` : null; }
+    function dayStatus(week, slot) { const dates=Object.keys(state.progress); return dates.some(key => { const d=fromKey(key); return weekFor(d)===week && ({1:1,2:2,3:3,4:4,5:5}[d.getDay()]===slot) && state.progress[key].session; }); }
+    function render() {
+      const session=sessionFor(selectedDate), week=weekFor(selectedDate), dateKey=toKey(selectedDate), record=recordFor(selectedDate);
+      $('dateTitle').textContent = selectedDate.toDateString() === today().toDateString() ? 'Today' : `${dayNames[selectedDate.getDay()]}, ${selectedDate.toLocaleDateString(undefined,{month:'short',day:'numeric'})}`;
+      $('weekLabel').textContent=`Week ${week} of 8`;
+      $('pathSummary').textContent=progression[week-1];
+      const section=$('todaySection');
+      if (!session) {
+        $('sessionTitle').textContent='Recovery day'; $('sessionMeta').textContent='Rest, an easy walk, or gentle movement if you feel like it.';
+        $('progressText').textContent='No checklist today'; $('percentText').textContent=''; $('progressBar').style.width='0%';
+        section.innerHTML='<div class="card rest"><div class="rest-icon">☀</div><h3>Keep the habit light</h3><p>Tomorrow has a planned session. A short relaxed walk is optional—not a missed workout.</p></div>';
+      } else {
+        const completed=session.exercises.filter((_,i)=>record.checks[i]).length, total=session.exercises.length, pct=Math.round((completed/total)*100);
+        $('sessionTitle').textContent=session.title; $('sessionMeta').textContent=`${dayNames[selectedDate.getDay()]} · ${session.meta}`;
+        $('progressText').textContent=`${completed} of ${total} complete`; $('percentText').textContent=`${pct}%`; $('progressBar').style.width=`${pct}%`;
+        const items=session.exercises.map((ex,i)=>`<label class="exercise ${record.checks[i]?'done':''}"><input class="check" type="checkbox" data-index="${i}" ${record.checks[i]?'checked':''}><span><span class="exercise-name">${escapeHtml(ex.name)}</span><span class="exercise-detail">${escapeHtml(ex.detail)}</span></span></label>`).join('');
+        section.innerHTML=`<div class="section-title"><h2>Today’s checklist</h2><button class="secondary" id="quickEdit">Edit</button></div><div class="card session"><p class="session-note">${escapeHtml(session.note||'')}</p>${items}<button class="complete ${record.session?'completed':''}" id="completeSession">${record.session?'✓ Session completed':'Mark session complete'}</button></div>`;
+        section.querySelectorAll('.check').forEach(box=>box.addEventListener('change',e=>{ const current=recordFor(selectedDate); current.checks[e.target.dataset.index]=e.target.checked; updateRecord(selectedDate,current); render(); }));
+        $('completeSession').addEventListener('click',()=>{ updateRecord(selectedDate,{...recordFor(selectedDate),session:!recordFor(selectedDate).session}); render(); });
+        $('quickEdit').addEventListener('click',openEdit);
+      }
+      $('weekGrid').innerHTML=Array.from({length:8},(_,i)=>{ const w=i+1, active=w===week, done=[1,2,3,4,5].every(slot=>dayStatus(w,slot)); return `<button class="week ${active?'active':''} ${done?'complete-week':''}" data-week="${w}"><b>Week ${w}</b><small>${done?'Complete':active?'Current':'Plan'}</small></button>`; }).join('');
+      $('weekGrid').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{ const target=Number(btn.dataset.week); selectedDate=addDays(fromKey(state.startDate),(target-1)*7+1); render(); window.scrollTo({top:0,behavior:'smooth'}); }));
+    }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char])); }
+    function openEdit() { const session=sessionFor(selectedDate), key=selectedSessionKey(); if(!session || !key) return; $('editTitle').value=session.title; $('editExercises').value=session.exercises.map(ex=>`${ex.name} — ${ex.detail}`).join('\n'); $('editNote').value=session.note||''; $('editDialog').showModal(); }
+    $('saveEdit').addEventListener('click',event=>{ event.preventDefault(); const key=selectedSessionKey(); const lines=$('editExercises').value.split('\n').map(line=>line.trim()).filter(Boolean); if(!key || !lines.length) return; const exercises=lines.map(line=>{ const [name,...parts]=line.split(/\s+[—–-]\s+/); return {name:name.trim(),detail:parts.join(' — ').trim()||'Complete'}; }); state.overrides[key]={title:$('editTitle').value.trim()||'Session',meta:sessionFor(selectedDate).meta,note:$('editNote').value.trim(),exercises}; save(); $('editDialog').close(); render(); });
+    $('settingsButton').addEventListener('click',()=>{ $('startDate').value=state.startDate; $('settingsDialog').showModal(); });
+    $('saveStart').addEventListener('click',event=>{ event.preventDefault(); if($('startDate').value) state.startDate=$('startDate').value; save(); $('settingsDialog').close(); render(); });
+    $('editSession').addEventListener('click',()=>{ $('settingsDialog').close(); openEdit(); });
+    $('previousDay').addEventListener('click',()=>{ selectedDate=addDays(selectedDate,-1); render(); }); $('nextDay').addEventListener('click',()=>{ selectedDate=addDays(selectedDate,1); render(); }); $('todayButton').addEventListener('click',()=>{ selectedDate=today(); render(); });
+    $('exportData').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}), link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`fit-track-backup-${toKey(today())}.json`; link.click(); URL.revokeObjectURL(link.href); });
+    $('importData').addEventListener('change',event=>{ const file=event.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ try { const data=JSON.parse(reader.result); if(!data.startDate || !data.progress) throw new Error(); state={...defaultState(),...data}; save(); $('settingsDialog').close(); render(); } catch { alert('That backup could not be read. Please choose a Fit Track backup file.'); } }; reader.readAsText(file); });
+    $('resetData').addEventListener('click',()=>{ if(confirm('Erase all completion history and custom edits from this browser?')) { state=defaultState(); save(); $('settingsDialog').close(); selectedDate=today(); render(); } });
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    render();
+  })();
+  </script>
+</body>
+</html>
+
